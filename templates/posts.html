@@ -1,0 +1,62 @@
+{% extends 'default.html' %}
+
+{% block title %}
+Объявления
+{% endblock title %}
+
+{% block content %}
+    <h1>Все объявления</h1>
+    {% if posts %}
+        <table style="width:100%;margin-top:25px;">
+            <tr style="background-color:#FBF6D9;">
+                <th style="border:1px solid #5CB3FF;width:275px;">Заголовок</th>
+                <th style="border:1px solid #5CB3FF;padding:0px 5px 0px 5px;width:175px;">Дата публикации</th>
+                <th style="border:1px solid #5CB3FF;padding:0px 5px 0px 5px;width:145px;">Категория</th>
+                <th style="border:1px solid #5CB3FF;padding:0px 5px 0px 5px;width:135px;">Пользователь</th>
+                <th style="border:1px solid #5CB3FF">Текст</th>
+            </tr>
+            {% for post in posts %}
+            <tr>
+                <td style="border-bottom:1px solid #DFE3FF;text-align:left;padding:0px 7px 0px 7px;">
+                    <a href="./{{post.pk}}">{{ post.title }}</a>
+                </td>
+                <td  style="border-bottom:1px solid #DFE3FF;">{{ post.datetime_created|date:'Y-m-d H:i:s' }}</td>
+                <td style="border-bottom:1px solid #DFE3FF;text-align:left;padding:0px 7px 0px 7px;">
+                    {{ post.category }}</td>
+                <td style="border-bottom:1px solid #DFE3FF;text-align:left;padding:0px 7px 0px 7px;">
+                    {{ post.user|truncatechars:30 }}</td>
+                <td style="border-bottom:1px solid #DFE3FF;text-align:left;padding:0px 7px 0px 7px;">
+                    {{ post.text|striptags|safe|truncatechars:90 }}</td>
+            </tr>
+            {% endfor %}
+
+            {% if page_obj.paginator.num_pages > 1 %}
+            <tr style="margin-top:45px;">
+                <td colspan="5" style="padding-top:50px;">
+                <span style="font-weight:bold;padding:9px;">Pages:</span>
+                {% if page_obj.has_previous %}
+                    <a href="?page=1">1</a>
+                    {% if page_obj.previous_page_number != 1 %}
+                    ...
+                    <a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
+                    {% endif %}
+                {% endif %}
+
+                <span style="padding:9px;font-weight:bold;">{{ page_obj.number }}</span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+                    {% if paginator.num_pages != page_obj.next_page_number %}
+                    ...
+                    <a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+                    {% endif %}
+                {% endif %}
+                </td>
+                {% endif %}
+            </tr>
+        </table>
+    {% else %}
+        <h2>Объявлений нет!</h2>
+    {% endif %}
+
+{% endblock content %}

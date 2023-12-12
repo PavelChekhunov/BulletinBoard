@@ -1,0 +1,20 @@
+{% extends 'default.html' %}
+
+{% block title %}
+Удаление объявления
+{% endblock title %}
+
+{% block content %}
+    <h1>Удаление объявления</h1>
+<hr>
+{% if is_current_author %}
+<form action="" method="post">
+    {% csrf_token %}
+    <p>Удаляем "{{ object.title }}"?</p>
+    <input type="submit" name="delete" value="Удалить" style="margin-right:9px;" />
+    <input type="submit" name="cancel" value="Отмена" style="margin-left:9px;" />
+</form>
+{% else %}
+    <h3>Вы не можете удалить это объявление, так как не являетесь его создателем!</h3>
+{% endif %}
+{% endblock content %}

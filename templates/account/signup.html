@@ -1,0 +1,63 @@
+{% extends "default.html" %}
+{% load i18n %}
+
+{% block title %}
+Регистрация
+{% endblock title %}
+
+{% block content %}
+<div style="margin: auto; width:65%; border:1px solid #aaaaff;padding:20px;background-color:#eeeef0;">
+<h3 style="margin:10px 0px 40px 0px;"> Регистрация учётной записи</h3>
+
+    <p>{% blocktrans %}Уже есть учетная запись? Пожалуйста, войдите перейдя по ссылке
+    <a href="{{ login_url }}">Вход</a>.{% endblocktrans %}</p>
+
+    <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+      {% csrf_token %}
+      {% if redirect_field_value %}
+        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+      {% endif %}
+      <p class="form-text error-text">{{ form.non_field_errors.as_text }}</p>
+      <table style="width:100%;">
+        <tr>
+        <th style="text-align:right;width:40%;vertical-align:top;padding:8px;">Адрес электронной почты:</th>
+        <td style="text-align:left;">
+            <input type="email" aria-describedby="emailHelp" placeholder="Адрес эл. почты"
+                   name="email" id="id_email" autocomplete="email" maxlength="320" required="required"
+                   class="form-control shadow-none" style="width:285px;">
+            <p id="emailHelp" class="form-text error-text">
+                {{ form.email.errors.as_text }}
+            </p>
+        </td>
+        </tr>
+        <tr>
+        <th style="text-align:right;padding:8px;vertical-align:top;">Пароль:</th>
+        <td style="text-align:left;">
+            <input type="password"  aria-describedby="passwordHelp1" placeholder="Пароль"
+                   name="password1" id="id_password1" required="required" autocomplete="new-password"
+                   class="form-control shadow-none" style="width:285px;">
+            <p id="passwordHelp1" class="form-text error-text">
+                {{ form.password1.errors.as_text }}
+            </p>
+        </td>
+        </tr>
+        <tr>
+        <th style="text-align:right;padding:8px;vertical-align:top;">Пароль (ещё раз):</th>
+        <td style="text-align:left;">
+            <input type="password"  aria-describedby="passwordHelp2" placeholder="Пароль (ещё раз)"
+                   name="password2" id="id_password2" required="required" autocomplete="new-password"
+                   class="form-control shadow-none" style="width:285px;">
+            <p id="passwordHelp2" class="form-text error-text">
+                {{ form.password2.errors.as_text }}
+            </p>
+        </td>
+        </tr>
+        <tr>
+        <th colspan="2" style="padding-top:30px;text-align:center;">
+            <input type="submit" value="Войти" style="font-weight: bold;width:125px;" id="loginButton">
+        </th>
+        </tr>
+      </table>
+    </form>
+
+{% endblock content %}

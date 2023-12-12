@@ -1,0 +1,117 @@
+{% extends 'default.html' %}
+
+{% block title %}
+Отклики
+{% endblock title %}
+
+{% block content %}
+<script type = "text/javascript">
+    function mark_comments(){
+        val = document.getElementById('cmts_all').checked;
+        tb = document.getElementById("comment_table_body");
+        els = tb.getElementsByTagName('input')
+        for (const el of els){
+            if (el.type == 'checkbox'){
+                el.checked = val
+            }
+        }
+    }
+</script>
+<h2 xmlns:post.pk>Все отклики на Ваши объявления</h2>
+<form method="post" action="">
+    {% csrf_token %}
+<table style="width:100%;">
+    <thead style="display:block;">
+    <tr><th colspan="5" style="padding:7px;text-align:left;">Отфильтруйте отклики по объявлениям</th></tr>
+    <tr style="background-color:#FBF6D9;">
+        <th style="border:1px solid #5CB3FF;width:28px;min-width:28px;"></th>
+        <th style="border:1px solid #5CB3FF;width:275px;padding:1px 5px 2px 5px;min-width:210px;">Заголовок</th>
+        <th style="border:1px solid #5CB3FF;width:170px;padding:1px 5px 2px 5px;min-width:170px;">Дата публикации</th>
+        <th style="border:1px solid #5CB3FF;width:145px;padding:1px 5px 2px 5px;min-width:145px;">Категория</th>
+        <th style="border:1px solid #5CB3FF;width:52.3%;padding:1px 5px 2px 5px;">Текст</th>
+    </tr>
+    </thead>
+    <tbody style="display:block;height:85px;overflow-y: scroll;">
+    {% for post in posts %}
+    <tr>
+        <th style="width:28px;min-width:28px;border:1px solid #DFE3FF;">
+        <input type="checkbox" id="p{{post.pk}}" name="cmt_posts" value="{{post.pk}}"
+               {% if post.pk in posts_filtered %} checked="checked" {% endif %}
+        />
+        </th>
+        <td style="border:1px solid #DFE3FF;text-align:left;width:275px;padding:1px 5px 2px 5px;min-width:210px;">
+            <a href="/posts/{{post.pk}}">{{ post.title }}</a>
+        </td>
+        <td style="border:1px solid #DFE3FF;width:170px;padding:1px 5px 2px 5px;min-width:170px;">
+            {{ post.datetime_created|date:'Y-m-d H:i:s' }}</td>
+        <td style="border:1px solid #DFE3FF;text-align:left;width:145px;padding:1px 5px 2px 5px;min-width:145px;">
+            {{ post.category|truncatechars:14 }}</td>
+        <td style="border:1px solid #DFE3FF;text-align:left;width:51.6%;padding:1px 5px 2px 5px;">
+            {{ post.text|striptags|safe|truncatechars:90 }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<div style="width:100%;margin-top: 20px;text-align:left;">
+    <span style="margin-right:9px;;font-weight:bold;">Статус отклика:</span>
+    <select name="cmt_type">
+        <option value="-1">Все</option>
+        <option value="0" {% if cmt_status == 0 %} selected {%endif%}>Не принят</option>
+        <option value="1" {% if cmt_status == 1 %} selected {%endif%}>Принят</option>
+    </select>
+</div>
+<div style="margin: -25px 0px 25px 0px;">
+    <input type="submit" name="btnFilter" value="Фильтровать" style="font-weight:bold;width:125px;margin-right:5px;" />
+    <input type="submit" name="btnRemoveFilter" value="Сбросить" style="font-weight:bold;width:125px;margin-left:5px;" />
+</div>
+<table style="width:100%;">
+    <thead>
+    <tr>
+        <th colspan="5" style="padding-left:5px;text-align:left;">
+            <span style="font-size:20px;margin-right:30px;">Отклики</span>
+            <input type="submit" name="btnApply" value="Принять отмеченные"
+                   style="font-weight:bold;font-size:10pt;width:180px;margin:0px 5px 5px 0px;" />
+            <input type="submit" name="btnDelete" value="Удалить отмеченные"
+                   style="font-weight:bold;font-size:10pt;width:180px;margin-left:5px;" />
+            <span style="margin:0px 35px 0px 15px;font-weight:bold;font-size:10pt;">
+                (Удаляются только не принятые отклики)</span>
+            <input type="submit" name="btnRemove" value="Установить отмеченные как не принятые"
+                   style="font-weight:bold;font-size:10pt;width:290px;margin-left:5px;" />
+        </th>
+    </tr>
+    <tr style="background-color:#EBE6C9;">
+        <th style="border:1px solid #5CB3FF;width:28px;min-width:28px;padding:1px 5px 2px 5px;">
+            <input type="checkbox" id="cmts_all" onclick="mark_comments()"/>
+        </th>
+        <th style="width:275px;border:1px solid #5CB3FF;min-width:210px;padding:1px 5px 2px 5px;">Объявление</th>
+        <th style="width:170px;border:1px solid #5CB3FF;min-width:170px;padding:1px 5px 2px 5px;">Дата</th>
+        <th style="width:135px;border:1px solid #5CB3FF;min-width:135px;padding:1px 5px 2px 5px;">Автор</th>
+        <th style="border:1px solid #5CB3FF;padding:1px 5px 2px 5px;">Текст</th>
+        <th style="width:85px;border:1px solid #5CB3FF;min-width:85px;padding:1px 5px 2px 5px;">Принят</th>
+    </tr>
+    </thead>
+    <tbody id="comment_table_body">
+    {% for cmt in comments %}
+    <tr>
+        <th style="width:28px;min-width:28px;border:1px solid #DFE3FF;vertical-align:top;">
+        <input type="checkbox" id="cmt{{cmt.pk}}" name="cmt_comments" value="{{cmt.pk}}" />
+        </th>
+        <td style="border:1px solid #DFE3FF;text-align:left;width:275px;min-width:210px;
+            padding:1px 5px 2px 5px;vertical-align:top;">{{ cmt.post }}</td>
+        <td style="border:1px solid #DFE3FF;width:170px;
+            padding:1px 5px 2px 5px;min-width:170px;vertical-align:top;">
+            {{ cmt.datetime_created|date:'Y-m-d H:i:s' }}</td>
+        <td style="border:1px solid #DFE3FF;text-align:left;width:135px;
+            padding:1px 5px 2px 5px;min-width:135px;vertical-align:top;">
+            {{ cmt.user|truncatechars:30 }}</td>
+        <td style="border:1px solid #DFE3FF;text-align:left;padding:1px 5px 2px 5px;">
+            {{ cmt.text|striptags }}</td>
+        <td style="border:1px solid #DFE3FF;width:85px;
+            padding:1px 5px 2px 5px;min-width:85px;vertical-align:top;">
+            {% if cmt.status %}Да{% else %}Нет{% endif %}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</form>
+{% endblock content %}

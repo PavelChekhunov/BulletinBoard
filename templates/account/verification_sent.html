@@ -1,0 +1,20 @@
+{% extends "default.html" %}
+{% load i18n %}
+
+{% block title %}
+Подтверждение регистрации
+{% endblock title %}
+
+{% block content %}
+<div style="margin: auto; width:65%;border:1px solid #aaaaff;padding:20px;background-color:#eeeef0;">
+<h3 style="margin:10px 0px 40px 0px;"> Подтвердите Ваш адрес электронной почты. </h3>
+
+
+<p>{% blocktrans %}На указанный Вами адрес отправлена ссылка для подтверждения регистрации.
+    Перейлите по ссылке для завершения процесса регистрации.
+    Если Вы не получили email сообщение в папку входящих сообщений, проверьте "спам" папку.
+    {% endblocktrans %}</p>
+
+
+</div>
+{% endblock content %}

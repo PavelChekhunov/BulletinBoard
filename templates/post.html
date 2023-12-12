@@ -1,0 +1,64 @@
+{% extends 'default.html' %}
+
+{% block title %}
+Объявление
+{% endblock title %}
+
+{% block content %}
+<div style="margin:0px 150px 0px 150px;"><h2>{{ post.title }}</h2></div>
+<table style="width:100%; font-size:16pt; margin-top:20px;"><tr>
+    <th style="width:25%">Автор: {{post.user.username}}</th>
+    <th style="width:40%">Дата создания: {{post.datetime_created|date:'Y-m-d H:i:s'}}</th>
+    <th style="width:35%">Категория: {{post.category}}</th>
+</tr></table>
+<hr>
+<div style="text-align:left;max-height:350px;overflow-y:scroll;">
+    {{ post.text|safe }}
+</div>
+
+<hr />
+{% if comments %}
+<div style="margin-top:20px;text-align:left;">
+<span style="font-weight:bold;margin-top:20px;">Ваши отклики:</span>
+{% endif %}
+<form method="POST" action="{% url 'add_comment' post.id %}">
+    {% csrf_token %}
+<table style="width:100%;font-size:11pt;">
+{% for comment in comments %}
+<tr {% if comment.status %}style="background-color:#70E898;"{%endif%}>
+    <td style="text-align:left;width:175px;border-bottom:1px solid #DFE3FF; vertical-align:top;">
+        {{comment.datetime_created|date:'Y-m-d H:i:s' }}</td>
+    <td style="text-align:left;border-bottom:1px solid #DFE3FF;">{{comment.text}}</td>
+    <td style="border-bottom:1px solid #DFE3FF;width:60px;text-align:right;padding-right:9px;">
+        {%if comment.status%}
+        <span>Принят</span>
+        {%else%}
+        <a href="{% url 'del_comment' id=post.id cid=comment.id %}">Delete</a>
+        {%endif%}
+    </td>
+</tr>
+{% endfor %}
+{% if request.user.is_authenticated %}
+<tr>
+    <th style="vertical-align:top;text-align:left;width:175px;padding-top:15px;">Новый отклик:</th>
+    <td rowspan="2" colspan="2" style="padding-top:15px;">
+        <textarea name="text_comment" rows="3" style="width:100%;border:1px solid #DFE3FF; " required="required"></textarea>
+    </td>
+</tr>
+<tr>
+    <td style="vertical-align:bottom;padding-bottom:7px;text-align:left;">
+        <input type="submit" value="Добавить" style="font-weight: bold;width:125px;">
+    </td>
+</tr>
+{% endif %}
+</table>
+</form>
+</div>
+{% endblock content %}
+
+{% block cmenu %}
+    {% if is_current_author %}
+    <li class="nav-item"><a class="nav-link" href="./{{post.pk}}/edit/">Редактирование объявления</a></li>
+    <li class="nav-item"><a class="nav-link" href="./{{post.pk}}/delete/">Удаление объявления</a></li>
+    {% endif %}
+{% endblock cmenu %}

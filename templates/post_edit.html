@@ -1,0 +1,54 @@
+{% extends 'default.html' %}
+
+{% block title %}
+{% if 'create' in request.path_info %}
+Новое объявление
+{% else %}
+Редактирование объявления
+{% endif %}
+{% endblock title %}
+
+
+{% block content %}
+{% if 'create' in request.path_info %}
+<h1>Новое объявление</h1>
+{% else %}
+<h1>Редактирование объявления</h1>
+{% endif %}
+<hr>
+{% if is_current_author %}
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.media }}
+    <table border="0" style="margin-left:auto;margin-right:auto;">
+    <tr>
+    <th style="text-align:right;padding:9px;">Заголовок:</th>
+    <td style="text-align:left;padding:9px;">
+    {{ form.title.errors }}
+    {{ form.title }}
+    </td>
+    <th style="text-align:right;padding:9px 9px 9px 38px;">Категория:</th>
+    <td style="text-align:left;padding:9px;">
+    {{ form.category.errors }}
+    {{ form.category }}
+    </td>
+    </tr>
+    <tr>
+    <th style="text-align:left;padding:25px 9px 5px 9px;vertical-align:top;">Текст:</th>
+    </tr><tr>
+    <td colspan="4" style="text-align:left;padding:5px 9px 9px 9px;">
+    {{ form.text.errors }}
+    {{ form.text }}
+    </td>
+    </tr>
+    </table>
+    <input type="submit" value="Сохранить" style="width:160px;margin-top:10px;font-weight:bold;" />
+</form>
+{% else %}
+    {% if 'create' in request.path_info %}
+        <h3>Вы не можете создавать объявления, так как не вошли в систему как пользователь!</h3>
+    {% else %}
+        <h3>Вы не можете редактировать это объявление, так как не являетесь его создателем!</h3>
+    {% endif %}
+{% endif %}
+{% endblock content %}
